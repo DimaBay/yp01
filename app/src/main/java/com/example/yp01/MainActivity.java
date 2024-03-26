@@ -1,6 +1,7 @@
 package com.example.yp01;
 
 import androidx.annotation.ContentView;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -8,9 +9,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -91,6 +95,71 @@ if (step==2)
                     }
                 return false;
             }
+
+    public void onLogin(View view) {
+        EditText emailEditText = findViewById(R.id.email);
+        EditText passwordEditText = findViewById(R.id.password);
+
+
+        String email = emailEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
+
+
+        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
+            showErrorDialog("Заполните все поля");
+            return;
+        }
+
+
+        if (!isValidEmail(email)) {
+            showErrorDialog("Некорректный email");
+            return;
+        }
+
+
+        onStepMain(view);
+    }
+    public void onReg(View view) {
+        EditText emailEditText = findViewById(R.id.email);
+        EditText passwordEditText = findViewById(R.id.password);
+        EditText phoneEditText = findViewById(R.id.phone);
+
+        EditText nameEditText = findViewById(R.id.full_name);
+
+
+
+        String email = emailEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
+        String phone = phoneEditText.getText().toString();
+        String name = nameEditText.getText().toString();
+
+        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(phone) || TextUtils.isEmpty(name)) {
+            showErrorDialog("Заполните все поля");
+            return;
+        }
+
+
+        if (!isValidEmail(email)) {
+            showErrorDialog("Некорректный email");
+            return;
+        }
+
+
+        onStepMain(view);
+    }
+
+    private boolean isValidEmail(String email) {
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches() &&
+                email.matches("^[a-z0-9]+@[a-z0-9]+\\.[a-z]{2,3}$");
+    }
+
+   private void showErrorDialog(String message) {
+        new AlertDialog.Builder(this)
+                .setTitle("Ошибка")
+                .setMessage(message)
+                .setPositiveButton("OK", null)
+                .show();
+    }
     private void openScreenOffline() {
 
         setContentView(R.layout.onboardingscreen);
