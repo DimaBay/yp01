@@ -4,13 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#FA4A0C">
+    android:background="#FA4A0C"
+    android:layoutAnimation="@transition/anim_setting_right">
 
     <ImageView
         android:id="@+id/img"
         android:layout_width="413dp"
         android:layout_height="439dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="20dp"
         android:scaleType="centerCrop"
         android:src="@drawable/illustration2"
         app:layout_constraintTop_toTopOf="parent"
@@ -20,7 +21,7 @@
         android:id="@+id/linearLayout2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,9 +32,15 @@
             android:layout_width="150dp"
             android:layout_height="80dp"
             android:layout_alignParentTop="true"
+            android:background="@drawable/buttonwhite"
             android:fontFamily="@font/italianno"
+            android:onClick="onStepLogin"
             android:text="Sign In"
-            android:textSize="34sp" />
+            android:textColor="#000000"
+            android:textColorHighlight="#000000"
+            android:textColorHint="#000000"
+            android:textColorLink="#000000"
+            android:textSize="24sp" />
 
         <Button
             android:id="@+id/sign_up"
@@ -41,18 +48,26 @@
             android:layout_height="80dp"
             android:layout_alignParentTop="true"
             android:layout_marginLeft="20dp"
+            android:background="@drawable/buttonwhite"
             android:fontFamily="@font/italianno"
+            android:onClick="onStepReg"
             android:text="Sign Up"
-            android:textSize="34sp" />
+            android:textColor="#000000"
+            android:textColorHighlight="#000000"
+            android:textColorHint="#000000"
+            android:textColorLink="#000000"
+            android:textSize="24sp" />
     </LinearLayout>
 
 
     <TextView
-        android:id="@+id/goust"
+        android:id="@+id/skip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="onStepMain"
         android:text="Skip Authorization"
         android:textColor="@color/black"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
@@ -61,6 +76,7 @@
         android:id="@+id/radioGroup"
         android:layout_width="wrap_content"
         android:layout_height="43dp"
+        android:layout_marginBottom="50dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
