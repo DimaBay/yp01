@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/foods"
+        android:onClick="onStepFood"
+        android:title="Foods" />
+    <item
+        android:id="@+id/drinks"
+        android:onClick="onStepDrinks"
+        android:title="Drinks" />
+    <item
+        android:id="@+id/snacks"
+        android:onClick="onStepSnacks"
+        android:title="Snacks" />
+    <item
+        android:id="@+id/sauce"
+        android:onClick="onStepSauce"
+        android:title="Sauce" />
+</menu>

@@ -3,6 +3,8 @@ package com.example.yp01;
 import androidx.annotation.ContentView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -12,16 +14,33 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.GestureDetector;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity {
 
+
     private ProgressBar progressBar;
     private TextView textView;
+    private RecyclerView recyclerView;
+    private List<Item> itemList;
+
+    private EditText adresSearch;
+    private EditText adresSearch1;
+    private ItemAdapter adapter;
+    int gorod;
     private static final int LOADING_DELAY = 3000;
 int step;
 
@@ -29,6 +48,8 @@ int step;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.launchscreen);
+
+
 
         progressBar = findViewById(R.id.progressBar);
 
@@ -166,6 +187,52 @@ if (step==2)
         step=1;
 
     }
+
+    public void onSearch(View view) {
+
+                if (gorod == 1)
+                {
+                    EditText adresSearch = findViewById(R.id.adresSearch);
+                    String searchText = adresSearch.getText().toString();
+
+                    if (adapter != null) {
+                        adapter.filter(searchText);
+                    }
+                }
+
+    }
+    public void onClear(View view) {
+
+
+            EditText adresSearch = findViewById(R.id.adresSearch);
+            adresSearch.setText("");
+
+
+    }
+    public void onSearchAdress(View view) {
+        ImageView confirmButton = findViewById(R.id.confirmButton);
+        EditText adresSearch = findViewById(R.id.adresSearch);
+        EditText adresSearch1 = findViewById(R.id.adresSearch1);
+        ImageView clear = findViewById(R.id.clear);
+        String address = adresSearch1.getText().toString();
+
+
+        String addressPattern = "^[\\p{L} ]+, [\\p{L} ]+, [\\p{L}0-9 ]+$";
+
+
+        if (address.isEmpty()) {
+            adresSearch1.setError("Поле не может быть пустым");
+        } else if (!address.matches(addressPattern)) {
+            adresSearch1.setError("Адрес должен быть в формате: Город, Улица, Дом");
+        } else {
+            adresSearch1.setVisibility(View.GONE);
+            adresSearch.setVisibility(View.VISIBLE);
+            confirmButton.setVisibility(View.GONE);
+            clear.setVisibility(View.VISIBLE);
+
+            gorod = 1;
+        }
+    }
     private void openScreenOnline() {
 
         setContentView(R.layout.onboardingscreen);
@@ -197,12 +264,79 @@ if (step==2)
         setContentView(R.layout.signupscreen);
         step=3;
     }
-    public void onStepMain(View view)
-    {
+    public void onStepMain(View view) {
         setContentView(R.layout.mainscreen);
-        step=3;
+        step = 3;
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+
+        itemList = new ArrayList<>();
+        addItemToList(itemList, "Форель с овощами", "N1.900", R.drawable.food1);
+        addItemToList(itemList, "Яичница с беконом", "N1.900", R.drawable.food2);
+        addItemToList(itemList, "Форель с овощами", "N1.900", R.drawable.food1);
+        addItemToList(itemList, "Яичница с беконом", "N1.900", R.drawable.food2);
+        adapter = new ItemAdapter(this, itemList);
+        recyclerView.setAdapter(adapter);
+    }
+    public void onStepFood(MenuItem item) {
+
+        step = 3;
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+
+        itemList = new ArrayList<>();
+        addItemToList(itemList, "Форель с овощами", "N1.900", R.drawable.food1);
+        addItemToList(itemList, "Яичница с беконом", "N1.900", R.drawable.food2);
+        addItemToList(itemList, "Форель с овощами", "N1.900", R.drawable.food1);
+        addItemToList(itemList, "Яичница с беконом", "N1.900", R.drawable.food2);
+        adapter = new ItemAdapter(this, itemList);
+        recyclerView.setAdapter(adapter);
+    }
+    public void onStepDrinks(MenuItem item) {
+        step = 3;
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+
+        itemList = new ArrayList<>();
+        addItemToList(itemList, "Пиво", "N1.200", R.drawable.drink1);
+        addItemToList(itemList, "Энергетик", "N1.100", R.drawable.drink2);
+        addItemToList(itemList, "Пиво", "N1.200", R.drawable.drink1);
+        addItemToList(itemList, "Энергетик", "N1.100", R.drawable.drink2);
+        adapter = new ItemAdapter(this, itemList);
+        recyclerView.setAdapter(adapter);
     }
 
+    public void onStepSnacks(MenuItem item) {
+        step = 3;
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+
+        itemList = new ArrayList<>();
+        addItemToList(itemList, "Чипсы", "N1.100", R.drawable.snacks1);
+        addItemToList(itemList, "Читос", "N1.300", R.drawable.snacks2);
+        addItemToList(itemList, "Чипсы", "N1.100", R.drawable.snacks1);
+        addItemToList(itemList, "Читос", "N1.300", R.drawable.snacks2);
+        adapter = new ItemAdapter(this, itemList);
+        recyclerView.setAdapter(adapter);
+    }
+
+    public void onStepSauce(MenuItem item) {
+        step = 3;
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+
+        itemList = new ArrayList<>();
+        addItemToList(itemList, "Кетчуп", "N1.000", R.drawable.sauce1);
+        addItemToList(itemList, "Соус тар-тар", "N1.000", R.drawable.sauce2);
+        addItemToList(itemList, "Кетчуп", "N1.000", R.drawable.sauce1);
+        addItemToList(itemList, "Соус тар-тар", "N1.000", R.drawable.sauce2);
+        adapter = new ItemAdapter(this, itemList);
+        recyclerView.setAdapter(adapter);
+    }
+
+    private void addItemToList(List<Item> itemList, String title, String price, int imageResource) {
+        itemList.add(new Item(title, price, imageResource));
+    }
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
