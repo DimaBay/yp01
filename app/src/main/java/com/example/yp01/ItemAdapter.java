@@ -21,29 +21,58 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
 
     public ItemAdapter(Context context, List<Item> itemList) {
-        this.context = context;
-        this.itemList = itemList;
-        this.originalItemList = new ArrayList<>(itemList); // Создаём копию списка
+        try {
+            this.context = context;
+            this.itemList = itemList;
+            this.originalItemList = new ArrayList<>(itemList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_layout, parent, false);
-        return new ViewHolder(view);
+        try {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_layout, parent, false);
+            return new ViewHolder(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Item item = itemList.get(position);
-        holder.titleTextView.setText(item.getTitle());
-        holder.priceTextView.setText(item.getPrice());
-        holder.imageView.setImageResource(item.getImageResource());
+        try {
+            Item item = itemList.get(position);
+            holder.titleTextView.setText(item.getTitle());
+            holder.priceTextView.setText(item.getPrice());
+            holder.imageView.setImageResource(item.getImageResource());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public int getItemCount() {
-        return itemList.size();
+        try {
+            return itemList.size();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    public Item getItem(int position) {
+        try {
+            if (position >= 0 && position < itemList.size()) {
+                return itemList.get(position);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -53,23 +82,31 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageView = itemView.findViewById(R.id.imageView);
-            titleTextView = itemView.findViewById(R.id.titleTextView);
-            priceTextView = itemView.findViewById(R.id.priceTextView);
-        }
-    }
-    public void filter(String text) {
-        itemList.clear();
-        if (TextUtils.isEmpty(text)) {
-            itemList.addAll(originalItemList);
-        } else {
-            for (Item item : originalItemList) {
-                if (item.getTitle().toLowerCase().contains(text.toLowerCase())) {
-                    itemList.add(item);
-                }
+            try {
+                imageView = itemView.findViewById(R.id.imageView);
+                titleTextView = itemView.findViewById(R.id.titleTextView);
+                priceTextView = itemView.findViewById(R.id.priceTextView);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
-        notifyDataSetChanged();
     }
 
+    public void filter(String text) {
+        try {
+            itemList.clear();
+            if (TextUtils.isEmpty(text)) {
+                itemList.addAll(originalItemList);
+            } else {
+                for (Item item : originalItemList) {
+                    if (item.getTitle().toLowerCase().contains(text.toLowerCase())) {
+                        itemList.add(item);
+                    }
+                }
+            }
+            notifyDataSetChanged();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

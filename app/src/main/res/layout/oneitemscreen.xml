@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E6E6E6">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:onClick="onStepMain"
+            android:src="@drawable/left" />
+        <ImageView
+            android:id="@+id/img"
+            android:layout_width="250dp"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center"
+            android:layout_height="250dp"
+            />
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:src="@drawable/tochki"/>
+
+        <TextView
+            android:id="@+id/Name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="name"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textColorHighlight="#000000"
+            android:textColorHint="#000000"
+            android:textColorLink="#000000"
+            android:textSize="30sp" />
+        <TextView
+            android:id="@+id/Price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="price"
+            android:textAlignment="center"
+            android:textColor="#FA4A0C"
+            android:textSize="25sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="Delivery info"
+            android:textColor="#000000"
+            android:textColorHighlight="#000000"
+            android:textColorHint="#000000"
+            android:textColorLink="#000000"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Delivered between monday aug and thursday 20 from 8pm to 91:32 pm"
+            android:textColor="#737373"
+            android:textColorHighlight="#737373"
+            android:textColorHint="#737373"
+            android:textColorLink="#737373"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/addtocart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/button"
+            android:onClick="onStepMain"
+            android:text="Add to cart" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

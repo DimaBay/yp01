@@ -75,19 +75,22 @@
             android:src="@drawable/lupa" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        tools:layout_editor_absoluteY="49dp">
-
-
-    </LinearLayout>
+    <TextView
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="15dp"
+        android:background="#818080"
+        android:text="Реклама"
+        android:textAlignment="center"
+        app:layout_constraintTop_toBottomOf="@+id/Ladress"
+        tools:layout_editor_absoluteX="10dp" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="65dp"
         android:background="#E5E5E5"
         app:itemIconTint="@color/bottom_nav_colors"
         app:itemTextColor="@color/bottom_nav_colors"
@@ -95,19 +98,35 @@
         app:layout_constraintTop_toBottomOf="@+id/Ladress"
         app:menu="@menu/navigation2" />
 
+    <TextView
+        android:id="@+id/results"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:fontFamily="@font/italianno"
+        android:text="Results"
+        android:textColor="#000000"
+        android:textColorHighlight="#000000"
+        android:textColorHint="#000000"
+        android:textColorLink="#000000"
+        android:textSize="48sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/adView" />
+
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="140dp"
-        android:layout_marginBottom="80dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="185dp"
         app:layout_constraintBottom_toTopOf="@+id/bottom_nav"
-        app:layout_constraintTop_toBottomOf="@+id/bottom_nav2">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent" />
 
     </FrameLayout>
 
