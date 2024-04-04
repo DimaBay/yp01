@@ -27,10 +27,11 @@ public class Item {
         this.price = price;
     }
 
-
     public int getImageResource() {
         return imageResource;
     }
 
-
+    public void setImageResource(int imageResource) {
+        this.imageResource = imageResource;
+    }
 }

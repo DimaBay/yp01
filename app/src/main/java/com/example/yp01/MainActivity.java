@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -130,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onLogin(View view) {
         try {
+            step = 3;
             EditText emailEditText = findViewById(R.id.email);
             EditText passwordEditText = findViewById(R.id.password);
 
@@ -146,7 +148,14 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            onStepMain(view);
+            DatabaseHelper dbHelper = new DatabaseHelper(this);
+
+           if (dbHelper.isUserExists(email, password)) {
+                onStepMain(view);
+            } else {
+               showErrorDialog("Пользователь с указанным email и паролем не найден");
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             showErrorDialog("Произошла ошибка при входе");
@@ -155,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onReg(View view) {
         try {
+            step = 3;
             EditText emailEditText = findViewById(R.id.email);
             EditText passwordEditText = findViewById(R.id.password);
             EditText phoneEditText = findViewById(R.id.phone);
@@ -174,8 +184,19 @@ public class MainActivity extends AppCompatActivity {
                 showErrorDialog("Некорректный email");
                 return;
             }
+            DatabaseHelper dbHelper = new DatabaseHelper(this);
 
-            onStepMain(view);
+           if (dbHelper.isUserExists(email,password)) {
+                showErrorDialog("Пользователь  уже существует");
+                return;
+            }
+
+            if (dbHelper.insertData(email, password)) {
+                onStepMain(view);
+            } else {
+                showErrorDialog("Произошла ошибка при добавлении данных в базу данных");
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             showErrorDialog("Произошла ошибка при регистрации");
@@ -202,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onCountPlus(View view) {
         try {
+            step = 3;
             TextView count = findViewById(R.id.count);
             int currentValue = Integer.parseInt(count.getText().toString());
             int newValue = currentValue + 1;
@@ -216,6 +238,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onCountMinus(View view) {
         try {
+            step = 3;
             TextView count = findViewById(R.id.count);
             int currentValue = Integer.parseInt(count.getText().toString());
             int newValue = currentValue - 1;
@@ -230,6 +253,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onSearch(View view) {
         try {
+            step = 3;
             if (gorod == 1) {
                 BottomNavigationView bottom_nav2 = findViewById(R.id.bottom_nav2);
                 bottom_nav2.setVisibility(View.GONE);
@@ -251,6 +275,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClear(View view) {
         try {
+            step = 3;
             TextView results = findViewById(R.id.results);
             results.setVisibility(View.GONE);
             BottomNavigationView bottom_nav2 = findViewById(R.id.bottom_nav2);
@@ -328,36 +353,46 @@ public class MainActivity extends AppCompatActivity {
             recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
             itemList = new ArrayList<>();
-            addItemToList(itemList, "Форель с овощами", "N1.900", R.drawable.food1);
-            addItemToList(itemList, "Форель с овощами", "N1.900", R.drawable.food1);
-            addItemToList(itemList, "Форель с овощами", "N1.900", R.drawable.food1);
-            addItemToList(itemList, "Форель с овощами", "N1.900", R.drawable.food1);
+
+
+            DatabaseHelper dbHelper = new DatabaseHelper(this);
+
+            /*dbHelper.insertProduct("Форель с овощами", "N1.900", R.drawable.food1);*/
+            Cursor cursor = dbHelper.getAllProducts();
+
+
+            if (cursor.moveToFirst()) {
+                do {
+
+                    String title = cursor.getString(cursor.getColumnIndex("title"));
+                    String price = cursor.getString(cursor.getColumnIndex("price"));
+                    int imageResource = cursor.getInt(cursor.getColumnIndex("image_resource"));
+
+
+                    itemList.add(new Item(title, price, imageResource));
+                } while (cursor.moveToNext());
+            }
+
+
+            cursor.close();
+
 
             adapter = new ItemAdapter(this, itemList);
             recyclerView.setAdapter(adapter);
 
 
-            RecyclerView recyclerView = findViewById(R.id.recyclerView);
             final TextView adView = findViewById(R.id.adView);
-
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
                     if (dy > 0) {
-
-
                         adView.setVisibility(View.GONE);
-
                     } else {
-
                         adView.setVisibility(View.VISIBLE);
                     }
                 }
             });
-
-
-
         } catch (Exception e) {
             e.printStackTrace();
             showErrorDialog("Произошла ошибка при открытии главного экрана");
@@ -366,6 +401,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onCart(View view) {
         try {
+            step = 3;
             LinearLayout SelectedItem = findViewById(R.id.SelectedItem);
             SelectedItem.setVisibility(View.GONE);
 
@@ -381,6 +417,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onBackCart(View view) {
         try {
+            step = 3;
             LinearLayout SelectedItem = findViewById(R.id.SelectedItem);
             SelectedItem.setVisibility(View.VISIBLE);
 
@@ -396,17 +433,52 @@ public class MainActivity extends AppCompatActivity {
 
     public void onStepBack(View view) {
         try {
+
             step = 3;
             recyclerView = findViewById(R.id.recyclerView);
             recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
             itemList = new ArrayList<>();
-            addItemToList(itemList, "Форель с овощами", "N1.900", R.drawable.food1);
-            addItemToList(itemList, "Форель с овощами", "N1.900", R.drawable.food1);
-            addItemToList(itemList, "Форель с овощами", "N1.900", R.drawable.food1);
-            addItemToList(itemList, "Форель с овощами", "N1.900", R.drawable.food1);
+
+
+            DatabaseHelper dbHelper = new DatabaseHelper(this);
+
+            /*dbHelper.insertProduct("Форель с овощами", "N1.900", R.drawable.food1);*/
+            Cursor cursor = dbHelper.getAllProducts();
+
+
+            if (cursor.moveToFirst()) {
+                do {
+
+                    String title = cursor.getString(cursor.getColumnIndex("title"));
+                    String price = cursor.getString(cursor.getColumnIndex("price"));
+                    int imageResource = cursor.getInt(cursor.getColumnIndex("image_resource"));
+
+
+                    itemList.add(new Item(title, price, imageResource));
+                } while (cursor.moveToNext());
+            }
+
+
+            cursor.close();
+
+
             adapter = new ItemAdapter(this, itemList);
             recyclerView.setAdapter(adapter);
+
+
+            final TextView adView = findViewById(R.id.adView);
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    if (dy > 0) {
+                        adView.setVisibility(View.GONE);
+                    } else {
+                        adView.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
             showErrorDialog("Произошла ошибка при возвращении на предыдущий экран");
@@ -437,12 +509,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void onAddToCart(View view) {
         try {
+            step = 3;
             Item selectedItem = adapter.getItem(0);
             String name = selectedItem.getTitle();
             String price = selectedItem.getPrice();
             int imageResource = selectedItem.getImageResource();
 
-           setContentView(R.layout.oneitemscreen);
+            setContentView(R.layout.oneitemscreen);
 
             TextView nameTextView = findViewById(R.id.Name);
             nameTextView.setText(name);
@@ -460,17 +533,52 @@ public class MainActivity extends AppCompatActivity {
 
     public void onStepFood(MenuItem item) {
         try {
+
             step = 3;
             recyclerView = findViewById(R.id.recyclerView);
             recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
             itemList = new ArrayList<>();
-            addItemToList(itemList, "Форель с овощами", "N1.900", R.drawable.food1);
-            addItemToList(itemList, "Форель с овощами", "N1.900", R.drawable.food1);
-            addItemToList(itemList, "Форель с овощами", "N1.900", R.drawable.food1);
-            addItemToList(itemList, "Форель с овощами", "N1.900", R.drawable.food1);
+
+
+            DatabaseHelper dbHelper = new DatabaseHelper(this);
+
+            /*dbHelper.insertProduct("Форель с овощами", "N1.900", R.drawable.food1);*/
+            Cursor cursor = dbHelper.getAllProducts();
+
+
+            if (cursor.moveToFirst()) {
+                do {
+
+                    String title = cursor.getString(cursor.getColumnIndex("title"));
+                    String price = cursor.getString(cursor.getColumnIndex("price"));
+                    int imageResource = cursor.getInt(cursor.getColumnIndex("image_resource"));
+
+
+                    itemList.add(new Item(title, price, imageResource));
+                } while (cursor.moveToNext());
+            }
+
+
+            cursor.close();
+
+
             adapter = new ItemAdapter(this, itemList);
             recyclerView.setAdapter(adapter);
+
+
+            final TextView adView = findViewById(R.id.adView);
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    if (dy > 0) {
+                        adView.setVisibility(View.GONE);
+                    } else {
+                        adView.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
             showErrorDialog("Произошла ошибка при открытии экрана с едой");
@@ -478,18 +586,57 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onStepDrinks(MenuItem item) {
-        try {
-            step = 3;
-            recyclerView = findViewById(R.id.recyclerView);
-            recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
-            itemList = new ArrayList<>();
-            addItemToList(itemList, "Пиво", "N1.200", R.drawable.drink1);
-            addItemToList(itemList, "Пиво", "N1.200", R.drawable.drink1);
-            addItemToList(itemList, "Пиво", "N1.200", R.drawable.drink1);
-            addItemToList(itemList, "Пиво", "N1.200", R.drawable.drink1);
-            adapter = new ItemAdapter(this, itemList);
-            recyclerView.setAdapter(adapter);
+            try {
+
+                step = 3;
+                recyclerView = findViewById(R.id.recyclerView);
+                recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+
+                itemList = new ArrayList<>();
+
+
+                DatabaseHelper dbHelper = new DatabaseHelper(this);
+
+
+                /*dbHelper.insertDrinks("Пиво", "N1.200", R.drawable.drink1);*/
+
+
+                Cursor cursor = dbHelper.getAllDrinks();
+
+
+                if (cursor.moveToFirst()) {
+                    do {
+
+                        String title = cursor.getString(cursor.getColumnIndex("title"));
+                        String price = cursor.getString(cursor.getColumnIndex("price"));
+                        int imageResource = cursor.getInt(cursor.getColumnIndex("image_resource"));
+
+
+                        itemList.add(new Item(title, price, imageResource));
+                    } while (cursor.moveToNext());
+                }
+
+
+                cursor.close();
+
+
+                adapter = new ItemAdapter(this, itemList);
+                recyclerView.setAdapter(adapter);
+
+
+                final TextView adView = findViewById(R.id.adView);
+                recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
+                        if (dy > 0) {
+                            adView.setVisibility(View.GONE);
+                        } else {
+                            adView.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
         } catch (Exception e) {
             e.printStackTrace();
             showErrorDialog("Произошла ошибка при открытии экрана с напитками");
@@ -497,18 +644,57 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onStepSnacks(MenuItem item) {
-        try {
-            step = 3;
-            recyclerView = findViewById(R.id.recyclerView);
-            recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
-            itemList = new ArrayList<>();
-            addItemToList(itemList, "Чипсы", "N1.100", R.drawable.snacks1);
-            addItemToList(itemList, "Чипсы", "N1.100", R.drawable.snacks1);
-            addItemToList(itemList, "Чипсы", "N1.100", R.drawable.snacks1);
-            addItemToList(itemList, "Чипсы", "N1.100", R.drawable.snacks1);
-            adapter = new ItemAdapter(this, itemList);
-            recyclerView.setAdapter(adapter);
+            try {
+
+                step = 3;
+                recyclerView = findViewById(R.id.recyclerView);
+                recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+
+                itemList = new ArrayList<>();
+
+
+                DatabaseHelper dbHelper = new DatabaseHelper(this);
+
+
+                /*dbHelper.insertSnacks("Чипсы", "N1.100", R.drawable.snacks1);*/
+
+
+                Cursor cursor = dbHelper.getAllSnacks();
+
+
+                if (cursor.moveToFirst()) {
+                    do {
+
+                        String title = cursor.getString(cursor.getColumnIndex("title"));
+                        String price = cursor.getString(cursor.getColumnIndex("price"));
+                        int imageResource = cursor.getInt(cursor.getColumnIndex("image_resource"));
+
+
+                        itemList.add(new Item(title, price, imageResource));
+                    } while (cursor.moveToNext());
+                }
+
+
+                cursor.close();
+
+
+                adapter = new ItemAdapter(this, itemList);
+                recyclerView.setAdapter(adapter);
+
+
+                final TextView adView = findViewById(R.id.adView);
+                recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
+                        if (dy > 0) {
+                            adView.setVisibility(View.GONE);
+                        } else {
+                            adView.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
         } catch (Exception e) {
             e.printStackTrace();
             showErrorDialog("Произошла ошибка при открытии экрана с закусками");
@@ -516,18 +702,58 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onStepSauce(MenuItem item) {
-        try {
-            step = 3;
-            recyclerView = findViewById(R.id.recyclerView);
-            recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
-            itemList = new ArrayList<>();
-            addItemToList(itemList, "Кетчуп", "N1.000", R.drawable.sauce1);
-            addItemToList(itemList, "Кетчуп", "N1.000", R.drawable.sauce1);
-            addItemToList(itemList, "Кетчуп", "N1.000", R.drawable.sauce1);
-            addItemToList(itemList, "Кетчуп", "N1.000", R.drawable.sauce1);
-            adapter = new ItemAdapter(this, itemList);
-            recyclerView.setAdapter(adapter);
+
+            try {
+
+                step = 3;
+                recyclerView = findViewById(R.id.recyclerView);
+                recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+
+                itemList = new ArrayList<>();
+
+
+                DatabaseHelper dbHelper = new DatabaseHelper(this);
+
+
+                /*dbHelper.insertSauce("Кетчуп", "N1.000", R.drawable.sauce1);*/
+
+
+                Cursor cursor = dbHelper.getAllSauce();
+
+
+                if (cursor.moveToFirst()) {
+                    do {
+
+                        String title = cursor.getString(cursor.getColumnIndex("title"));
+                        String price = cursor.getString(cursor.getColumnIndex("price"));
+                        int imageResource = cursor.getInt(cursor.getColumnIndex("image_resource"));
+
+
+                        itemList.add(new Item(title, price, imageResource));
+                    } while (cursor.moveToNext());
+                }
+
+
+                cursor.close();
+
+
+                adapter = new ItemAdapter(this, itemList);
+                recyclerView.setAdapter(adapter);
+
+
+                final TextView adView = findViewById(R.id.adView);
+                recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
+                        if (dy > 0) {
+                            adView.setVisibility(View.GONE);
+                        } else {
+                            adView.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
         } catch (Exception e) {
             e.printStackTrace();
             showErrorDialog("Произошла ошибка при открытии экрана с соусами");
